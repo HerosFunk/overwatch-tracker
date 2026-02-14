@@ -46,6 +46,9 @@ services:
     restart: unless-stopped
     ports:
       - "3002:80"
+    environment:
+      - AUTH_USER=${AUTH_USER:-admin}
+      - AUTH_PASSWORD=${AUTH_PASSWORD:-changeme}
     depends_on:
       - backend
     networks:
