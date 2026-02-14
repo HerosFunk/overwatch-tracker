@@ -6,6 +6,8 @@ services:
     image: mongo:7
     container_name: ow-tracker-db
     restart: unless-stopped
+    ports:
+      - "27018:27017"  # Expose MongoDB on port 27018 externally
     volumes:
       - mongo_data:/data/db
     environment:
@@ -41,7 +43,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        REACT_APP_API_URL: /api
+        REACT_APP_API_URL: /overwatch-tracker/api
     container_name: ow-tracker-web
     restart: unless-stopped
     ports:
