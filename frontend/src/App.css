@@ -1,0 +1,236 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #0a0a0a;
+  color: #fff;
+  line-height: 1.6;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading States */
+.app-loading,
+.app-error {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid #2a2a2a;
+  border-top-color: #ff9100;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.app-error h2 {
+  color: #f44336;
+  margin-bottom: 20px;
+}
+
+.app-error code {
+  background: #1a1a1a;
+  padding: 20px;
+  border-radius: 8px;
+  display: block;
+  margin-top: 20px;
+  text-align: left;
+  color: #4caf50;
+  border: 2px solid #2a2a2a;
+}
+
+.create-first-season-btn {
+  margin-top: 30px;
+  padding: 15px 40px;
+  background: linear-gradient(135deg, #ff9100, #ff6b00);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-first-season-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 145, 0, 0.4);
+}
+
+/* Navbar */
+.navbar {
+  background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+  border-bottom: 3px solid #ff9100;
+  padding: 15px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-brand h1 {
+  font-size: 26px;
+  color: #ff9100;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.nav-subtitle {
+  font-size: 12px;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 600;
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-link {
+  padding: 10px 20px;
+  background: #2a2a2a;
+  color: #ccc;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.settings-btn {
+  padding: 10px 16px;
+  background: #2a2a2a;
+  color: #ccc;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  width: 44px;
+}
+
+.nav-link:hover {
+  background: #333;
+  color: #fff;
+  border-color: #ff9100;
+  transform: translateY(-2px);
+}
+
+.settings-btn:hover {
+  background: #333;
+  color: #fff;
+  border-color: #ff9100;
+  transform: translateY(-2px);
+}
+
+.nav-link.companion-link {
+  background: linear-gradient(135deg, #ff9100, #ff6b00);
+  color: white;
+  border-color: #ff9100;
+}
+
+.nav-link.companion-link:hover {
+  background: linear-gradient(135deg, #ff6b00, #ff5500);
+  box-shadow: 0 4px 15px rgba(255, 145, 0, 0.4);
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 30px 0;
+  background: #0a0a0a;
+}
+
+/* Footer */
+.footer {
+  background: #1a1a1a;
+  border-top: 2px solid #2a2a2a;
+  padding: 20px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ff9100;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #ff6b00;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav-container {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .nav-brand {
+    text-align: center;
+  }
+  
+  .nav-links {
+    width: 100%;
+  }
+  
+  .nav-link {
+    flex: 1;
+    text-align: center;
+  }
+  
+  .settings-btn {
+    flex-shrink: 0;
+  }
+  
+  .main-content {
+    padding: 20px 0;
+  }
+}
