@@ -63,7 +63,7 @@ function App() {
   }
 
   return (
-    <Router>
+    <Router basename="/overwatch-tracker">
       <div className="app">
         <nav className="navbar">
           <div className="nav-container">
