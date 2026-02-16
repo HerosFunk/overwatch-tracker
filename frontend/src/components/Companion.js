@@ -90,12 +90,12 @@ function Companion({ activeSeason }) {
     }
   }, [step, gameData.selectedMap, gameData.bans]);
 
-  // Fetch briefing card when entering briefing step
+  // Fetch briefing card when map is chosen (available for BANS, BRIEFING, HERO_SELECTION)
   useEffect(() => {
-    if (step === STEPS.BRIEFING && gameData.selectedMap) {
+    if (gameData.selectedMap) {
       fetchBriefingCard();
     }
-  }, [step, gameData.selectedMap, gameData.bans]);
+  }, [gameData.selectedMap, gameData.bans]);
 
   const fetchTips = async () => {
     try {
@@ -569,16 +569,32 @@ function Companion({ activeSeason }) {
             </div>
           )}
 
-          {tips?.opponentStats?.length > 0 && (
+          {tips?.opponentStats?.filter(o => parseFloat(o.winrate) < 45 && o.games >= 2).length > 0 && (
             <div className="tip-banner tip-danger">
               <span className="tip-icon">&#9888;</span>
               <span>You struggle most vs:
-                {tips.opponentStats.slice(0, 2).map((o, i) => (
+                {tips.opponentStats.filter(o => parseFloat(o.winrate) < 45 && o.games >= 2).slice(0, 2).map((o, i) => (
                   <strong key={o.hero}>
                     {i > 0 ? ', ' : ' '}{o.hero} ({o.winrate}% WR, {o.games}g)
                   </strong>
                 ))}
               </span>
+            </div>
+          )}
+
+          {/* Previous notes on this map */}
+          {briefingData?.previousNotes?.length > 0 && (
+            <div className="map-notes-section">
+              <h4 className="map-notes-title">&#128221; Notes sur {gameData.selectedMap}</h4>
+              {briefingData.previousNotes.map((n, i) => (
+                <div key={i} className="map-note-item">
+                  <span className={`map-note-result ${n.result}`}>
+                    {n.result === 'win' ? 'V' : n.result === 'loss' ? 'D' : 'N'}
+                  </span>
+                  <span className="map-note-heroes">{n.heroes.join(', ')}</span>
+                  <span className="map-note-text">{n.note}</span>
+                </div>
+              ))}
             </div>
           )}
 
@@ -789,6 +805,22 @@ function Companion({ activeSeason }) {
             </div>
           )}
 
+          {/* Previous notes on this map */}
+          {briefingData?.previousNotes?.length > 0 && (
+            <div className="map-notes-section">
+              <h4 className="map-notes-title">&#128221; Notes sur {gameData.selectedMap}</h4>
+              {briefingData.previousNotes.map((n, i) => (
+                <div key={i} className="map-note-item">
+                  <span className={`map-note-result ${n.result}`}>
+                    {n.result === 'win' ? 'V' : n.result === 'loss' ? 'D' : 'N'}
+                  </span>
+                  <span className="map-note-heroes">{n.heroes.join(', ')}</span>
+                  <span className="map-note-text">{n.note}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <p className="step-subtitle">Hero picks will be tracked round-by-round in the next step</p>
 
           <div className="companion-actions">
@@ -906,17 +938,20 @@ function Companion({ activeSeason }) {
           {/* Enemy Tank Heroes */}
           <div className="opponent-section">
             <h4>Enemy Tank Heroes</h4>
-            {tips?.opponentStats?.length > 0 && (
-              <div className="tip-banner tip-small">
-                <span className="tip-icon">&#128202;</span>
-                <span>
-                  Hardest matchup: <strong>{tips.opponentStats[0]?.hero}</strong> ({tips.opponentStats[0]?.winrate}% WR)
-                  {tips.opponentStats[1] && (
-                    <>, <strong>{tips.opponentStats[1]?.hero}</strong> ({tips.opponentStats[1]?.winrate}% WR)</>
-                  )}
-                </span>
-              </div>
-            )}
+            {(() => {
+              const hardMatchups = tips?.opponentStats?.filter(o => parseFloat(o.winrate) < 45 && o.games >= 2) || [];
+              return hardMatchups.length > 0 ? (
+                <div className="tip-banner tip-small">
+                  <span className="tip-icon">&#128202;</span>
+                  <span>
+                    Hardest matchup: <strong>{hardMatchups[0].hero}</strong> ({hardMatchups[0].winrate}% WR)
+                    {hardMatchups[1] && (
+                      <>, <strong>{hardMatchups[1].hero}</strong> ({hardMatchups[1].winrate}% WR)</>
+                    )}
+                  </span>
+                </div>
+              ) : null;
+            })()}
             {Object.entries(TANK_HEROES_BY_SUBCLASS).map(([subclass, heroes]) => (
               <div key={subclass} className="hero-subclass-section">
                 <h5 className={`subclass-title subclass-${subclass}`}>

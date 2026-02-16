@@ -11,7 +11,7 @@ import {
   getMatchupMatrix,
   getHeroPool
 } from '../api';
-import { getMapImage, TANK_HEROES_DATA, getRankColor } from '../constants';
+import { getMapImage, TANK_HEROES_DATA, getRankColor, RANKS } from '../constants';
 import MatchupMatrix from './MatchupMatrix';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import './Dashboard.css';
@@ -171,42 +171,66 @@ function Dashboard({ activeSeason }) {
       </div>
 
       {/* Rank/SR Graph (season only) */}
-      {srHistory.length > 0 && (
-        <div className="chart-container">
-          <h3>{srHistory.some(d => d.rank) ? 'Rank Evolution' : 'SR Evolution'}</h3>
-          <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={srHistory.map((d, i) => ({
-              ...d,
-              rankDisplay: d.rank || '',
-              rankPercent: d.rankPercent ?? d.sr ?? 0
-            }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-              <XAxis
-                dataKey="date"
-                tickFormatter={(date) => new Date(date).toLocaleDateString()}
-                stroke="#888"
-              />
-              <YAxis stroke="#888" />
-              <Tooltip
-                contentStyle={{ background: '#1a1a1a', border: '1px solid #333' }}
-                labelFormatter={(date) => new Date(date).toLocaleString()}
-                formatter={(value, name, props) => {
-                  const entry = props.payload;
-                  if (entry.rank) return [`${entry.rank} (${entry.rankPercent}%)`, 'Rang'];
-                  return [value, 'SR'];
-                }}
-              />
-              <Line
-                type="monotone"
-                dataKey={srHistory.some(d => d.rank) ? 'rankPercent' : 'sr'}
-                stroke="#ff9100"
-                strokeWidth={3}
-                dot={{ fill: '#ff9100', r: 4 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      )}
+      {srHistory.length > 0 && (() => {
+        const hasRankData = srHistory.some(d => d.rank);
+        // Convert rank + percent to a continuous numeric value for the chart
+        // Each rank = 100 points, percent = position within that rank
+        const rankToNumeric = (rank, pct) => {
+          const idx = RANKS.indexOf(rank);
+          if (idx < 0) return 0;
+          return idx * 100 + (pct || 0);
+        };
+        const numericToRank = (value) => {
+          const idx = Math.floor(value / 100);
+          const pct = Math.round(value % 100);
+          return { rank: RANKS[idx] || '?', pct };
+        };
+
+        const chartData = srHistory.map(d => ({
+          ...d,
+          numericRank: d.rank ? rankToNumeric(d.rank, d.rankPercent) : (d.sr || 0)
+        }));
+
+        return (
+          <div className="chart-container">
+            <h3>{hasRankData ? 'Rank Evolution' : 'SR Evolution'}</h3>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={chartData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(date) => new Date(date).toLocaleDateString()}
+                  stroke="#888"
+                />
+                <YAxis
+                  stroke="#888"
+                  tickFormatter={hasRankData ? (val) => {
+                    const { rank } = numericToRank(val);
+                    return rank;
+                  } : undefined}
+                  width={hasRankData ? 90 : 60}
+                />
+                <Tooltip
+                  contentStyle={{ background: '#1a1a1a', border: '1px solid #333' }}
+                  labelFormatter={(date) => new Date(date).toLocaleString()}
+                  formatter={(value, name, props) => {
+                    const entry = props.payload;
+                    if (entry.rank) return [`${entry.rank} (${entry.rankPercent || 0}%)`, 'Rang'];
+                    return [value, 'SR'];
+                  }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="numericRank"
+                  stroke="#ff9100"
+                  strokeWidth={3}
+                  dot={{ fill: '#ff9100', r: 4 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        );
+      })()}
 
       {/* Hero Pool */}
       {heroPoolData.length > 0 && (

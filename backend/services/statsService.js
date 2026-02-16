@@ -440,21 +440,26 @@ class StatsService {
     const availableHeroes = ALL_TANKS.filter(h => !bans.includes(h));
     const recommendations = [];
     const now = new Date();
+    const totalPlayerGames = allGames.length;
+
+    // Helper: blend raw WR toward 50 based on sample size (more games = trust data more)
+    const blendWR = (rawWR, games, threshold = 5) => {
+      if (games === 0) return 50;
+      const conf = Math.min(games / threshold, 1);
+      return rawWR * conf + 50 * (1 - conf);
+    };
 
     for (const hero of availableHeroes) {
+      const globalHeroGames = allGames.filter(g => g.heroesPlayed.some(h => h.hero === hero));
       const seasonMapGames = seasonGames.filter(g => g.map === map && g.heroesPlayed.some(h => h.hero === hero));
-      const seasonMapWins = seasonMapGames.filter(g => g.result === 'win').length;
-      const mapWR = seasonMapGames.length >= 2 ? (seasonMapWins / seasonMapGames.length) * 100 : null;
-
       const globalMapGames = allGames.filter(g => g.map === map && g.heroesPlayed.some(h => h.hero === hero));
-      const globalMapWins = globalMapGames.filter(g => g.result === 'win').length;
-      const globalMapWR = globalMapGames.length >= 2 ? (globalMapWins / globalMapGames.length) * 100 : null;
 
-      let combinedMapWR = 50;
-      if (mapWR != null && globalMapWR != null) combinedMapWR = mapWR * 0.6 + globalMapWR * 0.4;
-      else if (mapWR != null) combinedMapWR = mapWR;
-      else if (globalMapWR != null) combinedMapWR = globalMapWR;
+      // Map WR: use any data, blend with confidence
+      const allMapGames = [...new Set([...seasonMapGames, ...globalMapGames])];
+      const allMapWins = allMapGames.filter(g => g.result === 'win').length;
+      const combinedMapWR = blendWR(allMapGames.length > 0 ? (allMapWins / allMapGames.length) * 100 : 50, allMapGames.length);
 
+      // Matchup WR
       let matchupWR = 50;
       if (opponentTanks.length > 0) {
         let mGames = 0, mWins = 0;
@@ -462,17 +467,25 @@ class StatsService {
           if (!g.heroesPlayed.some(h => h.hero === hero)) return;
           if ((g.opponentTanks || []).some(o => opponentTanks.includes(o))) { mGames++; if (g.result === 'win') mWins++; }
         });
-        if (mGames >= 2) matchupWR = (mWins / mGames) * 100;
+        matchupWR = blendWR(mGames > 0 ? (mWins / mGames) * 100 : 50, mGames);
       }
 
+      // Recent trend
       const recentGames = [...allGames].sort((a, b) => new Date(b.date) - new Date(a.date)).filter(g => g.heroesPlayed.some(h => h.hero === hero)).slice(0, 10);
-      const recentWR = recentGames.length >= 3 ? (recentGames.filter(g => g.result === 'win').length / recentGames.length) * 100 : 50;
+      const recentWR = blendWR(recentGames.length > 0 ? (recentGames.filter(g => g.result === 'win').length / recentGames.length) * 100 : 50, recentGames.length, 3);
 
-      const globalHeroGames = allGames.filter(g => g.heroesPlayed.some(h => h.hero === hero));
-      const globalWR = globalHeroGames.length >= 2 ? (globalHeroGames.filter(g => g.result === 'win').length / globalHeroGames.length) * 100 : 50;
+      // Global WR
+      const globalWR = blendWR(globalHeroGames.length > 0 ? (globalHeroGames.filter(g => g.result === 'win').length / globalHeroGames.length) * 100 : 50, globalHeroGames.length);
 
-      // NEW WEIGHTS
-      const compositeScore = (combinedMapWR * 0.40) + (matchupWR * 0.30) + (recentWR * 0.20) + (globalWR * 0.10);
+      // Base composite
+      let compositeScore = (combinedMapWR * 0.40) + (matchupWR * 0.30) + (recentWR * 0.20) + (globalWR * 0.10);
+
+      // Never-played penalty: after 5+ total games, penalize heroes never picked
+      // This encourages sticking to your champion pool
+      if (globalHeroGames.length === 0 && totalPlayerGames >= 5) {
+        const penaltyStrength = Math.min((totalPlayerGames - 5) / 10, 1); // ramps from 0 to 1 over 10 more games
+        compositeScore -= 15 * penaltyStrength; // up to -15 points
+      }
 
       // Confidence: recency + volatility
       const totalData = seasonMapGames.length + globalMapGames.length;
@@ -492,6 +505,7 @@ class StatsService {
       if (totalData >= 10 && recencyPenalty === 'fresh') confidence = 'high';
       else if (totalData >= 5) confidence = recencyPenalty === 'stale' ? 'low' : 'medium';
       else if (totalData >= 2) confidence = 'low';
+      else if (globalHeroGames.length > 0) confidence = 'low';
       else confidence = 'no_data';
 
       let tier;

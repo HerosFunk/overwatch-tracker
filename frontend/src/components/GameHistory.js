@@ -139,6 +139,12 @@ function GameHistory({ activeSeason }) {
                   </div>
                 )}
 
+                {game.notes && (
+                  <div className="game-notes-preview" title={game.notes}>
+                    &#128221; {game.notes.length > 40 ? game.notes.substring(0, 40) + '...' : game.notes}
+                  </div>
+                )}
+
                 <div className="game-row-arrow">&#8250;</div>
               </button>
             );

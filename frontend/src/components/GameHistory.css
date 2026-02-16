@@ -226,6 +226,17 @@
   text-align: center;
 }
 
+.game-notes-preview {
+  color: #888;
+  font-size: 12px;
+  font-style: italic;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 1;
+}
+
 .game-row-arrow {
   color: #555;
   font-size: 24px;
