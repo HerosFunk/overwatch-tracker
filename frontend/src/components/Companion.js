@@ -90,12 +90,20 @@ function Companion({ activeSeason }) {
     }
   }, [step, gameData.selectedMap, gameData.bans]);
 
-  // Fetch briefing card when map is chosen (available for BANS, BRIEFING, HERO_SELECTION)
+  // Fetch briefing card when map is chosen (notes available immediately for BANS step)
+  // and re-fetch when entering BRIEFING step (to include updated bans for hero recs)
   useEffect(() => {
     if (gameData.selectedMap) {
       fetchBriefingCard();
     }
-  }, [gameData.selectedMap, gameData.bans]);
+  }, [gameData.selectedMap]);
+
+  // Re-fetch briefing with final bans when entering briefing step
+  useEffect(() => {
+    if (step === STEPS.BRIEFING && gameData.selectedMap) {
+      fetchBriefingCard();
+    }
+  }, [step]);
 
   const fetchTips = async () => {
     try {

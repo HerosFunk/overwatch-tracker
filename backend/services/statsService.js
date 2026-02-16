@@ -628,7 +628,33 @@ class StatsService {
     mapGames.forEach(g => { (g.opponentTanks || []).forEach(opp => { if (!mapMatchups[opp]) mapMatchups[opp] = { games: 0, wins: 0 }; mapMatchups[opp].games++; if (g.result === 'win') mapMatchups[opp].wins++; }); });
     const dangerMatchups = Object.entries(mapMatchups).filter(([, d]) => d.games >= 2).map(([hero, d]) => ({ hero, games: d.games, winrate: ((d.wins / d.games) * 100).toFixed(1) })).sort((a, b) => parseFloat(a.winrate) - parseFloat(b.winrate)).slice(0, 3);
 
-    const previousNotes = mapGames.filter(g => g.notes && g.notes.trim()).slice(0, 3).map(g => ({ date: g.date, result: g.result, note: g.notes, heroes: g.heroesPlayed.map(h => h.hero) }));
+    // Collect notes: both game-level notes AND round-level notes
+    const previousNotes = [];
+    for (const g of mapGames) {
+      const allNotes = [];
+      // Game-level notes
+      if (g.notes && g.notes.trim()) {
+        allNotes.push(g.notes.trim());
+      }
+      // Round-level notes
+      if (g.rounds && g.rounds.length > 0) {
+        g.rounds.forEach(r => {
+          if (r.notes && r.notes.trim()) {
+            const phaseLabel = r.phase ? `[${r.phase} R${r.roundNumber}]` : `[R${r.roundNumber}]`;
+            allNotes.push(`${phaseLabel} ${r.notes.trim()}`);
+          }
+        });
+      }
+      if (allNotes.length > 0) {
+        previousNotes.push({
+          date: g.date,
+          result: g.result,
+          note: allNotes.join(' | '),
+          heroes: g.heroesPlayed.map(h => h.hero)
+        });
+      }
+      if (previousNotes.length >= 5) break; // Show up to 5 previous games with notes
+    }
 
     const sessionStats = this._computeSessionStats(seasonGames);
     const tiltAlert = this._computeTiltAlert(seasonGames);
