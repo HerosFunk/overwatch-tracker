@@ -31,11 +31,17 @@ function GameHistory({ activeSeason }) {
     return <div className="game-history loading">Loading games...</div>;
   }
 
+  const handleGameUpdated = (updatedGame) => {
+    setGames(prev => prev.map(g => g._id === updatedGame._id ? updatedGame : g));
+    setSelectedGame(updatedGame);
+  };
+
   if (selectedGame) {
     return (
       <GameDetail
         game={selectedGame}
         onBack={() => setSelectedGame(null)}
+        onGameUpdated={handleGameUpdated}
       />
     );
   }

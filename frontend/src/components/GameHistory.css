@@ -704,6 +704,293 @@
   border-top: 1px solid #222;
 }
 
+/* ===== EDIT MODE ===== */
+.detail-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.detail-edit-btn {
+  background: #222;
+  border: 1px solid #ff9100;
+  color: #ff9100;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.detail-edit-btn:hover {
+  background: rgba(255, 145, 0, 0.15);
+}
+
+.detail-edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.detail-save-btn {
+  background: #4caf50;
+  border: none;
+  color: #fff;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.detail-save-btn:hover:not(:disabled) {
+  background: #43a047;
+}
+
+.detail-save-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.detail-cancel-btn {
+  background: #333;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.detail-cancel-btn:hover:not(:disabled) {
+  background: #444;
+}
+
+.edit-bottom-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 20px 0;
+  border-top: 1px solid #2a2a2a;
+}
+
+.edit-bottom-actions .detail-save-btn,
+.edit-bottom-actions .detail-cancel-btn {
+  padding: 12px 32px;
+  font-size: 16px;
+}
+
+/* Result edit buttons */
+.edit-result-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-result-btn {
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background: rgba(255, 255, 255, 0.1);
+  color: #888;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.edit-result-btn.win.active {
+  background: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+  border-color: #4caf50;
+}
+
+.edit-result-btn.loss.active {
+  background: rgba(244, 67, 54, 0.3);
+  color: #f44336;
+  border-color: #f44336;
+}
+
+.edit-result-btn.draw.active {
+  background: rgba(136, 136, 136, 0.3);
+  color: #ccc;
+  border-color: #888;
+}
+
+.edit-result-btn:not(.active):hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+/* Edit form inputs */
+.edit-select {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: inherit;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.edit-input-small {
+  background: #1a1a1a;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: inherit;
+  width: 70px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.edit-score-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.edit-score-sep {
+  color: #888;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Hero toggle grid for edit mode */
+.edit-hero-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-subclass-group h5 {
+  margin: 0 0 6px 0;
+}
+
+.edit-hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.edit-hero-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 2px solid #333;
+  background: #1a1a1a;
+  color: #ccc;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.edit-hero-btn:hover:not(:disabled) {
+  border-color: #555;
+  background: #222;
+}
+
+.edit-hero-btn.selected {
+  border-color: #f44336;
+  background: rgba(244, 67, 54, 0.15);
+  color: #fff;
+}
+
+.edit-hero-btn.banned.selected {
+  border-color: #888;
+  background: rgba(136, 136, 136, 0.15);
+  text-decoration: line-through;
+}
+
+.edit-hero-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.edit-hero-img {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.edit-hint {
+  color: #888;
+  font-size: 12px;
+  margin: 0;
+  font-style: italic;
+}
+
+/* Tags edit */
+.edit-tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.edit-tag-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: #888;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.edit-tag-btn:hover {
+  border-color: #555;
+  color: #ccc;
+}
+
+.edit-tag-btn.selected {
+  border-color: #ff9100;
+  color: #ff9100;
+  background: rgba(255, 145, 0, 0.1);
+}
+
+/* Notes textarea */
+.edit-textarea {
+  width: 100%;
+  background: #0f0f0f;
+  border: 1px solid #333;
+  color: #ccc;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.edit-textarea:focus {
+  border-color: #ff9100;
+  outline: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .game-row {
