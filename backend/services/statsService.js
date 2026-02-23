@@ -76,10 +76,14 @@ class StatsService {
   async getBestWorstHeroes(season) {
     const heroStats = await this.getHeroStats(season);
     const qualified = heroStats.filter(h => h.games >= 3);
-    return {
-      best: qualified.slice().sort((a, b) => parseFloat(b.winrate) - parseFloat(a.winrate)).slice(0, 3),
-      worst: qualified.slice().sort((a, b) => parseFloat(a.winrate) - parseFloat(b.winrate)).slice(0, 3)
-    };
+    const best = qualified.slice().sort((a, b) => parseFloat(b.winrate) - parseFloat(a.winrate)).slice(0, 3);
+    const bestNames = new Set(best.map(h => h.hero));
+    // Exclude heroes already in "best" from "worst", and only show heroes below 50% WR
+    const worst = qualified
+      .filter(h => !bestNames.has(h.hero) && parseFloat(h.winrate) < 50)
+      .sort((a, b) => parseFloat(a.winrate) - parseFloat(b.winrate))
+      .slice(0, 3);
+    return { best, worst };
   }
 
   // ===== COMPANION TIPS =====

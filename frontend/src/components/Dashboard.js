@@ -191,6 +191,20 @@ function Dashboard({ activeSeason }) {
           numericRank: d.rank ? rankToNumeric(d.rank, d.rankPercent) : (d.sr || 0)
         }));
 
+        // Compute Y-axis domain: zoom to data range with 1 rank padding above/below
+        const numericValues = chartData.map(d => d.numericRank).filter(v => v > 0);
+        const dataMin = Math.min(...numericValues);
+        const dataMax = Math.max(...numericValues);
+        // Snap to full rank boundaries (multiples of 100) with 1 rank padding
+        const yMin = Math.max(0, Math.floor(dataMin / 100 - 1) * 100);
+        const yMax = Math.min(RANKS.length * 100, Math.ceil(dataMax / 100 + 1) * 100);
+
+        // Generate ticks at each rank boundary within range
+        const yTicks = [];
+        for (let v = yMin; v <= yMax; v += 100) {
+          yTicks.push(v);
+        }
+
         return (
           <div className="chart-container">
             <h3>{hasRankData ? 'Rank Evolution' : 'SR Evolution'}</h3>
@@ -204,6 +218,8 @@ function Dashboard({ activeSeason }) {
                 />
                 <YAxis
                   stroke="#888"
+                  domain={hasRankData ? [yMin, yMax] : ['auto', 'auto']}
+                  ticks={hasRankData ? yTicks : undefined}
                   tickFormatter={hasRankData ? (val) => {
                     const { rank } = numericToRank(val);
                     return rank;
