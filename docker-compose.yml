@@ -6,8 +6,7 @@ services:
     image: mongo:7
     container_name: ow-tracker-db
     restart: unless-stopped
-    ports:
-      - "27018:27017"  # Expose MongoDB on port 27018 externally
+    # No external port — only accessible from backend via Docker network
     volumes:
       - mongo_data:/data/db
     environment:
