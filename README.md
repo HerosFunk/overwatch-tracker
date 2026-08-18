@@ -22,31 +22,6 @@ Workflow complet pour chaque partie :
 6. **Pendant la game** : Timer + notes rapides
 7. **Post-game** : Sauvegarde automatique avec SR change
 
-### 🆕 Season 1 (2026) - Nouvelles Fonctionnalités
-
-#### 🚫 Système de Bans
-- Sélectionne tes 5 bans
-- Note les bans ennemis
-- Héros organisés par sous-classe (Heavyweight, Mobility, Ranged, Brawler, Displacement)
-- Ban pool dynamique basé sur la méta
-
-#### 🎴 Cartes de Placement
-- 6 cartes uniques disponibles
-- Doit sélectionner parmi les 3 dernières cartes proposées
-- Chaque carte affecte les gains SR
-- Options : Aggressive Play, Tank Synergy, Clutch Plays, Defensive Wall, Combo Master, Hero Specialist
-
-#### ⚡ Modifiers d'Evolution du Rang
-- **Win modifiers** : Momentum (+30), Confidence Boost (+25), Clutch Performance (+35), Team Synergy (+40)
-- **Loss modifiers** : Learning Experience (-5), Close Loss (-15), Stomped (-40), Coinflip Loss (-10)
-- **Special modifiers** : Seasonal Bonus (+50), Performance Reward (+75)
-- Appliqués automatiquement basé sur le résultat du match
-
-#### 📍 Cartes Organisées
-- 27 maps total organisées en 4 modes
-- Control, Escort, Assault, Hybrid
-- Sélection filtrée par mode
-
 ## 🛠️ Stack Technique
 
 **Backend:**
@@ -68,7 +43,7 @@ Workflow complet pour chaque partie :
 
 ### 1. Clone le repo
 ```bash
-git clone <ton-repo>
+git clone https://github.com/HerosFunk/overwatch-tracker.git
 cd overwatch-tracker
 ```
 
@@ -230,35 +205,6 @@ npm start
 - `Dashboard.css` - Dashboard
 - `Companion.css` - Companion mode
 
-## � Season 1 (2026) - Implémentation
-
-Tous les fichiers de documentation et d'intégration sont disponibles :
-
-- **QUICK_START.md** - Démarrage en 5 minutes
-- **SEASON1_IMPLEMENTATION.md** - Guide complet d'implémentation
-- **INTEGRATION_GUIDE.md** - Guide d'intégration des composants
-- **CHANGES_SUMMARY.md** - Résumé complet des changements
-- **VERIFICATION.md** - Rapport de vérification
-
-### Initialiser Season 1
-```bash
-cd backend
-node seed-season1.js
-```
-
-## 🚧 Améliorations futures
-
-- [ ] Images officielles pour héros/cartes
-- [ ] Import automatique via API Blizzard (si accessible)
-- [ ] Notifications de streak (5+ wins)
-- [ ] Export CSV des stats
-- [ ] Suggestions de bans intelligentes basées sur l'IA
-- [ ] Comparaison avec d'autres joueurs
-- [ ] Mode mobile optimisé
-- [ ] Dark/Light theme toggle
-- [ ] Objectifs personnels (reach 3500 SR)
-- [ ] Tracking des cosmétiques saisonniers
-
 ## 📝 Notes
 
 - **Tank uniquement** : L'app est optimisée pour tracker uniquement le rôle Tank
@@ -278,10 +224,3 @@ node seed-season1.js
 **Pas de saison active:**
 - Crée une saison via l'API (voir section Installation)
 
-## 📄 License
-
-MIT - Fais-en ce que tu veux !
-
----
-
-**Bon climb ! 🚀**
